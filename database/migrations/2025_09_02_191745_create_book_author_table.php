@@ -5,19 +5,29 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-  public function up(): void {
-    Schema::create('categories', function (Blueprint $t) {
-      $t->id('category_id');
-      $t->string('name', 100);
-      $t->unsignedBigInteger('parent_id')->nullable();
-      $t->text('description')->nullable();
-      $t->tinyInteger('status')->default(1); // 1=activo, 0=inactivo
-      $t->timestamps();
+    public function up(): void
+    {
+        Schema::create('book_author', function (Blueprint $table) {
+            $table->unsignedBigInteger('book_id');
+            $table->unsignedBigInteger('author_id');
+            $table->timestamps();
 
-      $t->foreign('parent_id')->references('category_id')->on('categories')
-        ->cascadeOnUpdate()->nullOnDelete();
-      $t->unique(['parent_id','name']); // evita duplicados en mismo padre
-    });
-  }
-  public function down(): void { Schema::dropIfExists('categories'); }
+            // PK compuesta
+            $table->primary(['book_id', 'author_id']);
+
+            // FKs que COINCIDEN con los nombres de PK definidos arriba
+            $table->foreign('book_id')
+                  ->references('book_id')->on('books')
+                  ->cascadeOnDelete()->cascadeOnUpdate();
+
+            $table->foreign('author_id')
+                  ->references('author_id')->on('authors')
+                  ->cascadeOnDelete()->cascadeOnUpdate();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('book_author');
+    }
 };
