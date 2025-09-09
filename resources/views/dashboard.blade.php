@@ -3,32 +3,38 @@
 @section('title', 'Dashboard')
 
 @section('content')
-  <div class="flex min-h-screen">
-    <!-- Sidebar -->
-    <div class="w-64 bg-zinc-100 dark:bg-zinc-900 h-full p-4 space-y-4">
-      <nav class="flex flex-col space-y-2">
-        <a href="{{ route('dashboard') }}" class="block px-4 py-2 rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 transition font-medium">
-          Dashboard
-        </a>
-        <a href="{{ route('catalog') }}" class="block px-4 py-2 rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 transition font-medium">
-          Ver catálogo
-        </a>
-        <a href="{{ route('books.create') }}" class="block px-4 py-2 rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 transition font-medium">
-          Agregar libro
-        </a>
-      </nav>
-    </div>
-    <!-- Main content -->
-    <div class="flex-1 p-6">
-      <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow">
-        <h2 class="text-xl font-bold mb-4">Bienvenido al panel</h2>
-        <p>Aquí puedes ver estadísticas generales de la biblioteca.</p>
-        <div class="mt-6">
-          <a href="{{ route('books.create') }}" class="inline-block px-6 py-3 rounded-lg bg-amber-600 text-white hover:bg-amber-700 transition">
-            Agregar nuevo libro
-          </a>
+<div class="flex min-h-screen">
+    {{-- SIDEBAR --}}
+    <aside class="w-56 bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 p-6 flex flex-col gap-4 shadow-lg">
+        <nav class="flex-1">
+            <ul class="space-y-2 text-sm">
+                <li>
+                    <a href="{{ route('catalog') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-amber-50 dark:hover:bg-zinc-800 hover:text-amber-600 transition-colors">
+                        📚 Ver catálogo
+                    </a>
+                </li>
+                @if(auth()->user()->role === 'admin')
+                <li>
+                    <a href="{{ route('books.create') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-amber-50 dark:hover:bg-zinc-800 hover:text-amber-600 transition-colors">
+                        ➕ Agregar libro
+                    </a>
+                </li>
+                @endif
+                <li>
+                    <a href="{{ route('loans.index') }}" class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-amber-50 dark:hover:bg-zinc-800 hover:text-amber-600 transition-colors">
+                        📖 Préstamos
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    {{-- CONTENIDO PRINCIPAL --}}
+    <main class="flex-1 p-8">
+        <div class="bg-white dark:bg-zinc-800 rounded-lg p-6 shadow">
+            <h2 class="text-xl font-bold mb-4">Bienvenido al panel</h2>
+            <p>Aquí puedes ver estadísticas generales de la biblioteca.</p>
         </div>
-      </div>
-    </div>
-  </div>
+    </main>
+</div>
 @endsection

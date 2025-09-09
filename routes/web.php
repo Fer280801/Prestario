@@ -1,41 +1,50 @@
 <?php
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\CatalogController;
-
+use App\Http\Controllers\LoanController;
+use App\Http\Controllers\MemberController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog'); // pública
+// 📖 Catálogo público
+Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// 📌 Dashboard y todo lo interno con prefijo
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
+    
+    Route::get('/', function () {
+        return view('dashboard');
+    })->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+    // 👤 Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-Route::middleware(['auth'])->group(function () {
-    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
-});
-
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
-    Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+    // 📚 Libros
     Route::get('/books/create', [BookController::class, 'create'])->name('books.create');
     Route::post('/books', [BookController::class, 'store'])->name('books.store');
+
+    // 📑 Reservas
+    Route::post('/reservations', [ReservationController::class, 'store'])->name('reservations.store');
+
+    // 💳 Préstamos
+    Route::resource('loans', LoanController::class);
+
+    // 👥 Miembros
+    Route::resource('members', MemberController::class);
 });
 
+// 🌐 Cambiar idioma
 Route::post('/language/change', function (Request $request) {
     $lang = $request->input('language_code');
     if (in_array($lang, ['en', 'es'])) {

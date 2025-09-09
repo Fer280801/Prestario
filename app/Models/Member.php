@@ -6,5 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Member extends Model
 {
-    //
+    protected $primaryKey = 'member_id';
+    protected $fillable = ['full_name','email','status'];
 }
